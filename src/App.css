@@ -36,3 +36,42 @@
     transform: rotate(360deg);
   }
 }
+
+body{
+    font-family: 'naumsquare';
+}
+
+.black-nav{
+    background-color: black;
+    width: 100%;
+    display: flex;
+    color: white;
+    padding: 20px;
+    font-weight: 600;
+
+}
+
+.list{
+    margin-top: 30px;
+    text-align: left;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+.model{
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #eee;
+}
+
+.like{
+    float: left;
+}
+
+.title{
+    float: left;
+}
+
+.date{
+    float: left;
+    clear:both;
+}
