@@ -4,9 +4,6 @@ import './App.css';
 
 function App() {
 
-let abc = new Date();    
-console.log(abc);
-
 let [글제목,글제목변경] = useState(['react 공부 1일차','react 공부 2일차','react 공부 3일차']);
 let [발행일,발행수정일] = useState([abc,abc,abc]);
 let [추천수,추천수변경] = useState([0,0,0])
@@ -16,11 +13,6 @@ let [이미지,이미지변경] = useState(['./logo192.png','./react.png',logo])
 let [제목수정,제목수정변경] = useState('none') 
 let [전체수정,전체수정변경] = useState('none') 
 let [새글작성,새글작성변경] = useState('none')
-
-// // let ports = 'react 써보기';
-// function 함수(){
-//     return 100
-// }
 
 function 제목바꾸기(reTitleValue){
     var newTitle = [...글제목]; //딥 카피 필요 값 공유 일어남
