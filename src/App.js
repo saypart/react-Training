@@ -4,14 +4,18 @@ import './App.css';
 
 function App() {
 
+let abc = new Date();    
+console.log(abc);
 
 let [글제목,글제목변경] = useState(['react 공부 1일차','react 공부 2일차','react 공부 3일차']);
-let [발행일,발행수정일] = useState(['8월 9일','8월 10일','8월 11일']);
+let [발행일,발행수정일] = useState([abc,abc,abc]);
 let [추천수,추천수변경] = useState([0,0,0])
 let [상세내용,상세내용변경] = useState(["props 활용하여 코딩해보기","redux 활용해서 코딩해보기","for 문 활용해서 코딩해보기"])
 let [현재위치,현재위치변경] = useState([0])
 let [이미지,이미지변경] = useState(['./logo192.png','./react.png',logo])
-let [제목수정,제목수정변경] = useState('none')  
+let [제목수정,제목수정변경] = useState('none') 
+let [전체수정,전체수정변경] = useState('none') 
+let [새글작성,새글작성변경] = useState('none')
 
 // // let ports = 'react 써보기';
 // function 함수(){
@@ -32,34 +36,11 @@ function 추천수바꾸기(event, index){
     추천수변경(newLike);
 }
 
-function 글작성(props){
-    var newTitle = [...글제목];
-    newTitle.push('공부4일차');
-    글제목변경(newTitle);
-
-    var newDate = [...발행일];
-    newDate.push('8월12일');
-    발행수정일(newDate);
-    
-    var newLikeCount = [...추천수];
-    newLikeCount.push(0);
-    추천수변경(newLikeCount);
-
-    var newContent = [...상세내용]
-    newContent.push('이런저런 거 함');
-    상세내용변경(newContent);
-
-    var newImg = [...이미지]
-    newImg.push('./logo192.png');
-    이미지변경(newImg);
-}
-
-
   return (
     <div className="App"> 
         <div className="black-nav">
             <div /* style={ {color : 'blue', fontSize : 30 }} */>개발 블로그
-            <button onClick={(event) => 글작성(글작성)} style={{float:"right"}}>글쓰기</button>
+            <button onClick={(event) => 새글작성변경('block')} style={{float:"right"}}>글쓰기</button>
             </div>
         </div>
         {글제목.map((titleElem, index) => {
@@ -74,7 +55,7 @@ function 글작성(props){
                     // onMouseLeave = {() => } 
                     >{글제목[index]} 
                     </h3>
-                    <h5 style={{float: "left"}}>&nbsp;&nbsp;&nbsp;{발행일[index]}</h5>
+                    <h5 style={{float: "left"}}>&nbsp;&nbsp;&nbsp;{시간변환(발행일[index])}</h5>
                     <h3 style={{float: "right"}} onClick={ (event) =>추천수바꾸기(event,index)}>👍 {추천수[index]}</h3>
                     <hr style={{clear: "both"}}/>
                 </div>
@@ -93,31 +74,46 @@ function 글작성(props){
     </div>
 
 
-        {/* 글작성창*/}
-    <div className='titleEditWindow' style={{display :[제목수정]}}>
+        {/* 새글작성창*/}
+    <div className='titleEditWindow' style={{display :[새글작성]}}>
         <input id='createTitle'></input>
-        <input id='createDate'></input>
-        <input id='createLikeCount'></input>
         <input id='createContent'></input>
         <input id='newImg'></input>
+        <button  onClick={(event) => {
+            let createTitle = document.getElementById('createTitle').value
+            let date = new Date();
+            let createContent = document.getElementById('createContent').value
+            let createImg = document.getElementById('createContent').value
+            
 
-{/* 작성 필요 */}
-        {/* <button  onClick={(event) => {
-            let newTitleValue = document.getElementById('createTitle').value    
+            var newTitle = [...글제목];
+            newTitle.push(createTitle);
+            글제목변경(newTitle);
+
+            var newDate = [...발행일];
+            newDate.push(date);
+            발행수정일(newDate);
+    
+            var newLikeCount = [...추천수];
+            newLikeCount.push(0);
+            추천수변경(newLikeCount);
+
+            var newContent = [...상세내용]
+            newContent.push(createContent);
+            상세내용변경(newContent);
+
+            var newImg = [...이미지]
+            newImg.push(createImg);
+            이미지변경(newImg);
             
             
-            제목바꾸기(reTitleValue)
-            제목수정변경('none');
-            }}>수정</button>  */}
+            새글작성변경('none');
+            }}>작성</button>
     </div>
 
 
-
-
-
-
-
-    <Modal 글제목={글제목} 제목수정변경={제목수정변경} 발행일={발행일} 상세내용={상세내용} 현재위치={현재위치} 이미지={이미지}> </Modal>
+{/*상세내용 출력모달창*/}
+    <Modal 글제목={글제목} 제목수정변경={제목수정변경} 전체수정변경={전체수정변경} 발행일={발행일} 상세내용={상세내용} 현재위치={현재위치} 이미지={이미지}> </Modal>
         {/*
         <div className = "list">
             <h3>{글제목[0]}</h3>
@@ -147,18 +143,32 @@ function 글작성(props){
   );
 }
 
+
 function Modal(props,event){
     return(
     <div className='modal'>
         <h2>{props.글제목[props.현재위치]}
             <button  onClick={(event) => {
                 props.제목수정변경('block');
-                }}>수정</button> </h2>
-        <p>{props.발행일[props.현재위치]}</p>
+                }}>수정</button>
+            <button  onClick={(event) => {
+                props.전체수정변경('block');
+                }}>전체수정</button>
+        </h2>
+        <p>{시간변환(props.발행일[props.현재위치])}</p>
         <img src= {props.이미지[props.현재위치]}/>
         <p>{props.상세내용[props.현재위치]}</p>
     </div>
     )
+}
+
+function 시간변환(date){
+    let 월 = date.getMonth()+1;
+    let 일 = date.getDate();
+    let 시 = date.getHours();
+    let 분 = date.getMinutes();
+    let createDate = 월+"월 "+일+"일 "+시+":"+분 ;
+    return createDate
 }
 
 
