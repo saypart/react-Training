@@ -3,16 +3,21 @@ import logo from './logo.svg';
 import './App.css';
 
 function App() {
+//초기 날짜용 데이터
+let 일차1 = new Date(2023, 7, 22, 9, 40 );  
+let 일차2 = new Date(2023, 7, 23, 12, 45 );  
+let 일차3 = new Date(2023, 7, 24, 16, 9 );
 
 let [글제목,글제목변경] = useState(['react 공부 1일차','react 공부 2일차','react 공부 3일차']);
-let [발행일,발행수정일] = useState([abc,abc,abc]);
+let [발행일,발행수정일] = useState([일차1,일차2,일차3]);
 let [추천수,추천수변경] = useState([0,0,0])
 let [상세내용,상세내용변경] = useState(["props 활용하여 코딩해보기","redux 활용해서 코딩해보기","for 문 활용해서 코딩해보기"])
 let [현재위치,현재위치변경] = useState([0])
-let [이미지,이미지변경] = useState(['./logo192.png','./react.png',logo])
+let [이미지,이미지변경] = useState(['./logo192.png','./react.png','https://i.namu.wiki/i/7Ml4qvhlNRl9hX3DRqHC7g_j-6voMFeXYaRKuCiR3cMXJP7KuFEA6kf0BEneLu99vYeLiFbeTTCleaV-1yux5A.webp'])
 let [제목수정,제목수정변경] = useState('none') 
 let [전체수정,전체수정변경] = useState('none') 
 let [새글작성,새글작성변경] = useState('none')
+let [상세페이지,상세페이지변경] = useState('none')
 
 function 제목바꾸기(reTitleValue){
     var newTitle = [...글제목]; //딥 카피 필요 값 공유 일어남
@@ -22,11 +27,45 @@ function 제목바꾸기(reTitleValue){
     // 글제목변경(['react 공부 10일차','react 공부 2일차','react 공부 3일차']);
 }
 
-function 추천수바꾸기(event, index){
+function 추천수바꾸기(event, 현재위치){
     var newLike = [...추천수]; 
-    newLike[index] = newLike[index]+1;
+    newLike[현재위치] = newLike[현재위치]+1;
     추천수변경(newLike);
 }
+
+function Modal(props,event){
+    return(
+    <div className='modal' style={{display :[상세페이지]}}>
+        <h2>{props.글제목[props.현재위치]}
+            <button  onClick={(event) => {
+                props.제목수정변경('block');
+                }}>수정</button>
+            <button  onClick={(event) => {
+                props.전체수정변경('block');
+                }}>전체수정</button>
+            <button  onClick={(event) => {
+                props.상세페이지변경('none');
+                }}>상세페이지 닫기</button>
+        </h2>
+        <p>{시간변환(props.발행일[props.현재위치])}</p>
+        <img src= {props.이미지[props.현재위치]}/>
+        <p>{props.상세내용[props.현재위치]}</p>
+        <button  onClick={(event) => {
+                props.추천수바꾸기(event,props.현재위치);
+                }}>글 추천하기</button>
+    </div>
+    )
+}
+
+function 시간변환(date){
+    let 월 = date.getMonth()+1;
+    let 일 = date.getDate();
+    let 시 = date.getHours().toString().padStart(2,0);
+    let 분 = date.getMinutes().toString().padStart(2,0);
+    let createDate = 월+"월 "+일+"일 "+시+":"+분 ;
+    return createDate
+}
+
 
   return (
     <div className="App"> 
@@ -38,11 +77,12 @@ function 추천수바꾸기(event, index){
         {글제목.map((titleElem, index) => {
             return (
                 <>
-                <div className = "list">
+                <div className = "list" onClick={(event) => {현재위치변경(index); 상세페이지변경('block') }}
+                    title='눌러서 상세페이지를 볼수 있습니다.'>
                     {/* <h3>{글제목[index]}<span onClick={ ()=>{ 추천수변경(추천수[index] +1 )}}>👍</span> {추천수[index]} </h3> */}
                     <h3 style={{float: "left"}}
-                    onClick={(event) => {현재위치변경(index)}}
-                    title='눌러서 상세페이지를 볼수 있습니다.'
+                    // onClick={(event) => {현재위치변경(index)}}
+                    // title='눌러서 상세페이지를 볼수 있습니다.'
                     // onMouseEnter = {() => }
                     // onMouseLeave = {() => } 
                     >{글제목[index]} 
@@ -68,14 +108,24 @@ function 추천수바꾸기(event, index){
 
         {/* 새글작성창*/}
     <div className='titleEditWindow' style={{display :[새글작성]}}>
-        <input id='createTitle'></input>
-        <input id='createContent'></input>
-        <input id='newImg'></input>
+        <label>새글 작성</label>
+        <div>
+            <label>제 목 : </label>
+            <input id='createTitle'></input>
+        </div>
+        <div>
+            <label>상세내용 : </label>
+            <input id='createContent'></input>
+        </div>
+        <div>
+            <label>사진 URL : </label>
+            <input id='newImg'></input>
+        </div>
         <button  onClick={(event) => {
             let createTitle = document.getElementById('createTitle').value
             let date = new Date();
             let createContent = document.getElementById('createContent').value
-            let createImg = document.getElementById('createContent').value
+            let createImg = document.getElementById('newImg').value
             
 
             var newTitle = [...글제목];
@@ -105,7 +155,7 @@ function 추천수바꾸기(event, index){
 
 
 {/*상세내용 출력모달창*/}
-    <Modal 글제목={글제목} 제목수정변경={제목수정변경} 전체수정변경={전체수정변경} 발행일={발행일} 상세내용={상세내용} 현재위치={현재위치} 이미지={이미지}> </Modal>
+    <Modal 글제목={글제목} 제목수정변경={제목수정변경} 전체수정변경={전체수정변경} 발행일={발행일} 상세내용={상세내용} 현재위치={현재위치} 이미지={이미지} 추천수바꾸기={추천수바꾸기} 상세페이지변경={상세페이지변경}> </Modal>
         {/*
         <div className = "list">
             <h3>{글제목[0]}</h3>
@@ -136,32 +186,7 @@ function 추천수바꾸기(event, index){
 }
 
 
-function Modal(props,event){
-    return(
-    <div className='modal'>
-        <h2>{props.글제목[props.현재위치]}
-            <button  onClick={(event) => {
-                props.제목수정변경('block');
-                }}>수정</button>
-            <button  onClick={(event) => {
-                props.전체수정변경('block');
-                }}>전체수정</button>
-        </h2>
-        <p>{시간변환(props.발행일[props.현재위치])}</p>
-        <img src= {props.이미지[props.현재위치]}/>
-        <p>{props.상세내용[props.현재위치]}</p>
-    </div>
-    )
-}
 
-function 시간변환(date){
-    let 월 = date.getMonth()+1;
-    let 일 = date.getDate();
-    let 시 = date.getHours();
-    let 분 = date.getMinutes();
-    let createDate = 월+"월 "+일+"일 "+시+":"+분 ;
-    return createDate
-}
 
 
 export default App;
