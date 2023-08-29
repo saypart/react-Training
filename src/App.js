@@ -19,6 +19,11 @@ let [전체수정,전체수정변경] = useState('none')
 let [새글작성,새글작성변경] = useState('none')
 let [상세페이지,상세페이지변경] = useState('none')
 
+let [수정제목,수정제목변경] =useState('');
+let [수정상세내용,수정상세내용변경] =useState('');
+let [수정이미지,수정이미지변경] =useState('');
+
+
 function 제목바꾸기(reTitleValue){
     var newTitle = [...글제목]; //딥 카피 필요 값 공유 일어남
     newTitle[현재위치] = reTitleValue;
@@ -33,15 +38,27 @@ function 추천수바꾸기(event, 현재위치){
     추천수변경(newLike);
 }
 
+function 전체수정하기(){
+    var strTitle = document.getElementById('reNewTitle').value;
+    var strContent = document.getElementById('reNewContent').value;
+    var strIme = document.getElementById('reNewImg').value;
+    수정제목변경(strTitle)
+    수정상세내용변경(strContent)
+    수정이미지변경(strIme)
+}
+
 function Modal(props,event){
     return(
     <div className='modal' style={{display :[상세페이지]}}>
         <h2>{props.글제목[props.현재위치]}
-            <button  onClick={(event) => {
+            {/* <button  onClick={(event) => {
                 props.제목수정변경('block');
-                }}>수정</button>
+                }}>수정</button> */}
             <button  onClick={(event) => {
                 props.전체수정변경('block');
+                props.수정제목변경(props.글제목[props.현재위치]);
+                props.수정상세내용변경(props.상세내용[props.현재위치]);
+                props.수정이미지변경(props.이미지[props.현재위치]);
                 }}>전체수정</button>
             <button  onClick={(event) => {
                 props.상세페이지변경('none');
@@ -153,9 +170,61 @@ function 시간변환(date){
             }}>작성</button>
     </div>
 
+      {/* 글수정창*/}
+      <div className='titleEditWindow' style={{display :[전체수정]}}>
+        <label>수정 창</label>
+        <div>
+            <label>제 목 : </label>
+            <input id='reNewTitle'  value={수정제목} onInput={ (Event) => 전체수정하기()}></input>
+        </div>
+        <div>
+            <label>상세내용 : </label>
+            <input id='reNewContent' value={수정상세내용} onInput={ (Event) => 전체수정하기()}></input>
+
+        </div>
+        <div>
+            <label>사진 URL : </label>
+            <input id='reNewImg' value={수정이미지} onInput={ (Event) => 전체수정하기()} ></input>
+        </div>
+        <button  onClick={(event) => {
+            let reTitle = document.getElementById('reNewTitle').value;
+            let date = new Date();
+            let reContent = document.getElementById('reNewContent').value;
+            let reImg = document.getElementById('reNewImg').value;
+            
+
+            var newTitle = [...글제목]; 
+            newTitle[현재위치] = reTitle;
+            글제목변경(newTitle);
+
+            var newDate = [...발행일];
+            newDate[현재위치] = date;
+            발행수정일(newDate);
+
+            var newContent = [...상세내용]
+            newContent[현재위치]= reContent;
+            상세내용변경(newContent);
+
+            var newImg = [...이미지]
+            newImg[현재위치] = reImg;
+            이미지변경(newImg);
+            
+            전체수정변경('none');
+            }}>수정</button>
+            
+            <button  onClick={(event) => {
+            전체수정변경('none');
+            }}>취소</button>
+    </div>
+
+
+
+
+
+
 
 {/*상세내용 출력모달창*/}
-    <Modal 글제목={글제목} 제목수정변경={제목수정변경} 전체수정변경={전체수정변경} 발행일={발행일} 상세내용={상세내용} 현재위치={현재위치} 이미지={이미지} 추천수바꾸기={추천수바꾸기} 상세페이지변경={상세페이지변경}> </Modal>
+    <Modal 글제목={글제목} 제목수정변경={제목수정변경} 전체수정변경={전체수정변경} 발행일={발행일} 상세내용={상세내용} 현재위치={현재위치} 이미지={이미지} 추천수바꾸기={추천수바꾸기} 상세페이지변경={상세페이지변경} 수정제목변경={수정제목변경} 수정상세내용변경={수정상세내용변경} 수정이미지변경={수정이미지변경} ></Modal>
         {/*
         <div className = "list">
             <h3>{글제목[0]}</h3>
